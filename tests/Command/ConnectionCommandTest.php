@@ -1,40 +1,44 @@
 <?php
+
 namespace Tests\Command;
 
-use Console\TestConnection;
+use Console\Command\TestConnection;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 use Symfony\Component\Console\Tests\Tester\CommandTesterTest;
 
 class ConnectionCommandTest extends CommandTesterTest
 {
-
     public function testExecute()
     {
         $application = new Application('Console App', 'v1.0.0');
         $application->add(new TestConnection());
-
-        $this->command = $application->find('Connection');
+        $application->setDefaultCommand(TestConnection::COMMAND_NAME);
+        
+        $this->command = $application->find(TestConnection::COMMAND_NAME);
 
         $this->tester = new CommandTester($this->command);
 
-        $this->tester->execute(array(
-            'command' => $this->command->getName(),
-            'host' => 'localhostee',
-            'port' => '3306',
-            'db' => 'test',
-            'user' => 'root',
-            'pass' => '',
-        ));
+        $db = 'test';
+
+        $this->tester->execute(
+            array(
+                'command' => $this->command->getName(),
+                'host' => 'localhost',
+                'port' => '3306',
+                'db' => $db,
+                'user' => 'root',
+                'pass' => '',
+            )
+        );
 
         $output = $this->tester->getDisplay();
-        $this->assertContains('Connection test to database test successful tested!', $output);
+        $this->assertContains(sprintf("Connection test to database %s successful tested!", $db), $output);
     }
 
 
     public function testGetInput()
     {
-
         $application = new Application('Console App', 'v1.0.0');
         $application->add(new TestConnection());
 
@@ -42,14 +46,16 @@ class ConnectionCommandTest extends CommandTesterTest
 
         $this->tester = new CommandTester($this->command);
 
-        $this->tester->execute(array(
-            'command' => $this->command->getName(),
-            'host' => 'localhost',
-            'port' => '3306',
-            'db' => 'test',
-            'user' => 'root',
-            'pass' => '',
-        ));
+        $this->tester->execute(
+            array(
+                'command' => $this->command->getName(),
+                'host' => 'localhost',
+                'port' => '3306',
+                'db' => 'test',
+                'user' => 'root',
+                'pass' => '',
+            )
+        );
 
         $this->assertEquals('3306', $this->tester->getInput()->getArgument('port'));
         $this->assertEquals('localhost', $this->tester->getInput()->getArgument('host'));
