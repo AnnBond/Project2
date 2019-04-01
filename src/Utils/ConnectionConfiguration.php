@@ -46,9 +46,9 @@ class ConnectionConfiguration
     public function __construct(
         string $db,
         string $username,
-        ?string $password = null,
-        string $host = 'localhost',
-        int $port = 3306
+        ?string $password,
+        string $host,
+        int $port
     ) {
         $this->db = $db;
         $this->host = $host;

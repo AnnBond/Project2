@@ -9,7 +9,6 @@ use PDOException;
 
 class Connection
 {
-
     /**
      * @param ConnectionConfiguration $configuration
      * @param array $options

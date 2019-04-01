@@ -12,17 +12,28 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 
-class TestConnection extends Command
+class TestConnectionCommand extends Command
 {
     /**
      * @const string
      */
-    public const COMMAND_NAME = 'Connection';
+    public const COMMAND_NAME = 'test';
 
     /**
      * @var Connection
      */
     protected $connection;
+
+    /**
+     * TestConnectionCommand constructor.
+     * @param Connection $connection
+     */
+    public function __construct(Connection $connection)
+    {
+        $this->connection = $connection;
+
+        parent::__construct(static::COMMAND_NAME);
+    }
 
     /**
      * {@inheritDoc}
@@ -36,7 +47,7 @@ class TestConnection extends Command
             ->addArgument('port', InputArgument::REQUIRED, 'port')
             ->addArgument('db', InputArgument::REQUIRED, 'database name')
             ->addArgument('user', InputArgument::REQUIRED, 'user')
-            ->addArgument('pass', InputArgument::REQUIRED, 'pass');
+            ->addArgument('pass', InputArgument::OPTIONAL, 'pass');
     }
 
     /**
@@ -49,7 +60,7 @@ class TestConnection extends Command
         $db = $input->getArgument('db');
 
         try {
-            $this->getConnection()->connect(
+            $this->connection->connect(
                 $this->getConfig($input),
                 [
                     PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
@@ -93,17 +104,5 @@ class TestConnection extends Command
             $host,
             $port
         );
-    }
-
-    /**
-     * @return Connection
-     */
-    protected function getConnection(): Connection
-    {
-        if ($this->connection === null) {
-            $this->connection = new Connection();
-        }
-
-        return $this->connection;
     }
 }
