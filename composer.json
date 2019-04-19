@@ -1,7 +1,10 @@
 {
     "require": {
-        "symfony/console": "^3.3",
-        "ext-pdo": "*"
+        "symfony/console": "^4.2",
+        "ext-pdo": "*",
+        "symfony/dependency-injection": "^4.2",
+        "symfony/config": "^4.2",
+        "symfony/yaml": "^4.2"
     },
     "require-dev": {
         "ext-pdo_mysql": "*",
