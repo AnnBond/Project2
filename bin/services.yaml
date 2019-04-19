@@ -1,0 +1,16 @@
+parameters:
+  database_host: 3306
+
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
+
+    app.connection.configuration:
+      class: Console\Utils\ConnectionConfiguration
+      arguments: ['test', 'root', '', 'localhost', '3306']
+
+    app.connection:
+      class: Console\Service\Connection
+      arguments: [ "@app.connection.configuration" ]

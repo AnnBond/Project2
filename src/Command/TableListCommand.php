@@ -31,6 +31,7 @@ class TableListCommand extends Command
      */
     public function __construct(Connection $connection)
     {
+//        $this->connection = $this->getContainer()->get('app.connection');
         $this->connection = $connection;
 
         parent::__construct(static::COMMAND_NAME);

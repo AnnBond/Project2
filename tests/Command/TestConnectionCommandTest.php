@@ -19,7 +19,7 @@ class TestConnectionCommandTest extends TestCase
         $connection = new Connection();
         $commandTester = new CommandTester(new TestConnectionCommand($connection));
 
-        $db = 'wo_payments';
+        $db = 'test';
 
         $commandTester->execute(
             array(
