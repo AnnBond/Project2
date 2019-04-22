@@ -5,6 +5,7 @@ namespace Console\Command;
 use Console\Exception\ConnectionException;
 use Console\Service\Connection;
 use Console\Utils\ConnectionConfiguration;
+use Generator;
 use PDO;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\Table;
@@ -19,6 +20,13 @@ class TableListCommand extends Command
      * @const string
      */
     public const COMMAND_NAME = 'tableList';
+
+    protected const PDO_CONFIG = [
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+        PDO::ATTR_EMULATE_PREPARES => false,
+        PDO::ATTR_PERSISTENT => true
+    ];
 
     /**
      * @var Connection
@@ -62,32 +70,14 @@ class TableListCommand extends Command
         $db = $input->getArgument('db');
 
         try {
-            $database = $this->connection->connect(
-                $this->getConfig($input),
-                [
-                    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-                    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-                    PDO::ATTR_EMULATE_PREPARES => false,
-                ]
-            );
-
-            $tableList = $database->query('show tables')->fetchAll();
-
-            $rows = [];
-            foreach ($tableList as $tableDB) {
-                $tableName = $tableDB["Tables_in_test"];
-                $rowsCount = $database->query("SELECT COUNT(*) as count FROM $tableName")->fetch();
-
-                $rows[] = [$tableName, $rowsCount['count']];
-
-            }
-
             $table = new Table($output);
-            $table
-                ->setHeaders(['Tables'])
-                ->setRows(
-                    $rows
-                );
+            $table->setHeaders(['Tables', 'Records']);
+
+            $tableListGenerator = $this->getTablesListAndCount($this->getConfig($input));
+
+            foreach ($tableListGenerator as list($tableName, $rowsCount)) {
+                $table->addRow([$tableName, $rowsCount]);
+            }
 
             $table->render();
 
@@ -99,12 +89,35 @@ class TableListCommand extends Command
                 $output->writeln((string)$exception);
             }
 
-            $output->writeln(sprintf("<error>Result about all tables in database %s failed </error>", $db));
+            $output->writeln(sprintf("<error>Result about all tables in database %s failed</error>", $db));
 
             return 1;
         }
 
         return 0;
+    }
+
+    /**
+     * @param ConnectionConfiguration $config
+     * @return Generator [$tableName, $rowsCount]
+     * @throws ConnectionException
+     */
+    protected function getTablesListAndCount(ConnectionConfiguration $config): Generator
+    {
+        $database = $this->connection->connect(
+            $config,
+            static::PDO_CONFIG
+        );
+
+        $stmt = $database->query('SHOW TABLES');
+
+        while ($tableName = $stmt->fetch(PDO::FETCH_COLUMN)) {
+            $rowsCount = $database
+                ->query(sprintf("SELECT COUNT(1) AS `count` FROM %s", $tableName))
+                ->fetch(PDO::FETCH_COLUMN);
+
+            yield [$tableName, $rowsCount];
+        }
     }
 
     /**
