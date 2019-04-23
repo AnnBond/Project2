@@ -1,8 +1,12 @@
-language: php
-php:
- - '7.1'
-install:
-   - composer install
-script:
- - vendor/bin/phpunit
- - vendor/bin/box compile
+  language: php
+  php:
+    - '7.1'
+  install:
+    - composer install
+  script:
+    - vendor/bin/phpunit
+    - vendor/bin/box compile
+  services:
+    - mysql
+  before_install:
+    - mysql -e 'CREATE DATABASE IF NOT EXISTS test;'
