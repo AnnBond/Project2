@@ -19,7 +19,7 @@ class TestConnectionCommandTest extends TestCase
         $connection = new Connection();
         $commandTester = new CommandTester(new TestConnectionCommand($connection));
 
-        $db = 'wo_payments';
+        $db = 'test';
 
         $commandTester->execute(
             array(
@@ -47,7 +47,7 @@ class TestConnectionCommandTest extends TestCase
 
         $commandTester->execute(
             array(
-                'host' => 'localhost',
+                'host' => 'local',
                 'port' => 3306,
                 'db' => $db,
                 'user' => 'root',
