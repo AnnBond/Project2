@@ -3,5 +3,7 @@ php:
  - '7.1'
  - hhvm # on Trusty only
  - nightly
+install:
+   - composer install --no-dev --quiet
 script:
  - vendor/bin/phpunit
