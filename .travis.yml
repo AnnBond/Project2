@@ -3,6 +3,7 @@
     - '7.1'
   install:
     - composer install
+    - composer bin box require --dev humbug/box
   script:
     - vendor/bin/phpunit
     - vendor/bin/box compile
