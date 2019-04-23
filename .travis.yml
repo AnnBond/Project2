@@ -1,9 +1,7 @@
 language: php
 php:
  - '7.1'
- - hhvm # on Trusty only
- - nightly
 install:
-   - composer install --no-dev --quiet
+   - composer install
 script:
  - vendor/bin/phpunit
