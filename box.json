@@ -1,0 +1,6 @@
+{
+  "chmod": "0700",
+  "output": "example.phar",
+  "main": "bin/application.php",
+  "stub": false
+}

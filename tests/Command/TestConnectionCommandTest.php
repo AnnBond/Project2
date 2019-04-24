@@ -47,7 +47,7 @@ class TestConnectionCommandTest extends TestCase
 
         $commandTester->execute(
             array(
-                'host' => 'localhost',
+                'host' => 'local',
                 'port' => 3306,
                 'db' => $db,
                 'user' => 'root',
