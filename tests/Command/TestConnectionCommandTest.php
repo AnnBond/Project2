@@ -32,7 +32,7 @@ class TestConnectionCommandTest extends TestCase
         );
 
         $output = $commandTester->getDisplay();
-        $this->assertContains(sprintf("Connection test to database %s successful tested!", $db), $output);
+        $this->assertStringContainsString(sprintf("Connection test to database %s successful tested!", $db), $output);
     }
 
     /**
@@ -56,7 +56,7 @@ class TestConnectionCommandTest extends TestCase
         );
 
         $output = $commandTester->getDisplay();
-        $this->assertContains(sprintf("Connection test to database %s error", $db), $output);
+        $this->assertStringContainsString(sprintf("Connection test to database %s error", $db), $output);
     }
 
     public function testSuccessExecute()
@@ -82,7 +82,7 @@ class TestConnectionCommandTest extends TestCase
         );
 
         $output = $commandTester->getDisplay();
-        $this->assertContains(sprintf("Connection test to database %s successful tested!", $db), $output);
+        $this->assertStringContainsString(sprintf("Connection test to database %s successful tested!", $db), $output);
     }
 
     public function testFailedExecute()
@@ -108,7 +108,7 @@ class TestConnectionCommandTest extends TestCase
         );
 
         $output = $commandTester->getDisplay();
-        $this->assertContains(sprintf("Connection test to database %s error", $db), $output);
+        $this->assertStringContainsString(sprintf("Connection test to database %s error", $db), $output);
     }
 
     public function testFailedVerboseExecute()
@@ -138,8 +138,8 @@ class TestConnectionCommandTest extends TestCase
 
         $output = $commandTester->getDisplay();
 
-        $this->assertContains(ConnectionException::class, $output);
-        $this->assertContains(sprintf("Connection test to database %s error", $db), $output);
+        $this->assertStringContainsString(ConnectionException::class, $output);
+        $this->assertStringContainsString(sprintf("Connection test to database %s error", $db), $output);
     }
 
     public function testGetInput()
