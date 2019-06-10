@@ -18,9 +18,11 @@ class CommandPassTest extends TestCase
         $container = new ContainerBuilder();
 
         $application = new Definition(Application::class);
+
         $tableList = new Definition(TableListCommand::class);
-        $testConnection = new Definition(TestConnectionCommand::class);
         $tableList->addTag('console.command');
+
+        $testConnection = new Definition(TestConnectionCommand::class);
         $testConnection->addTag('console.command');
 
         $container->addDefinitions([
@@ -31,6 +33,16 @@ class CommandPassTest extends TestCase
 
         $commandPass = new CommandPass();
         $commandPass->process($container);
+
+        $methodCalls = $application->getMethodCalls();
+
+        list($method, $calls) = $methodCalls[0];
+        self::assertEquals('add', $method);
+        self::assertTrue(in_array((string)$calls[0], array(TableListCommand::class, TestConnectionCommand::class)));
+
+        list($method, $calls) = $methodCalls[1];
+        self::assertEquals('add', $method);
+        self::assertTrue(in_array((string)$calls[0], array(TableListCommand::class, TestConnectionCommand::class)));
 
         $this->assertTrue($application->hasMethodCall('add'));
         $this->assertCount(2, $application->getMethodCalls());
